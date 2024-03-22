@@ -1,3 +1,3 @@
 FROM mikesplain/openvas
 
-COPY hello.py /tmp
+COPY ./src /tmp
