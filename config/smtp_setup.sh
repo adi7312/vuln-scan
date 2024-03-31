@@ -1,0 +1,1 @@
+# Script responsible for setting up SMTP server (sending mails in GVM requires our own SMTP server)

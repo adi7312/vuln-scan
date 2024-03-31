@@ -9,29 +9,20 @@
 |    |---gvm_handler.py
 |    |
 |    |---scanner.py
+|    
+|---config
 |    |
-|    |---smtp_handler.py
-|
-|---Dockerfile
+|    |---smtp_setup.sh
+|    |
+|    |---update.sh    
 ```
 
-* `gvm_handler.py` - skrypt obsługujący działanie Openvasa: uruchamanie skanowania, generowanie raportu, IP urządzeń powinny być pobierane od skanera sieci (`scanner.py`)
+* `gvm_handler.py` - skrypt obsługujący działanie GVM: uruchamanie skanowania, generowanie raportu, IP urządzeń powinny być pobierane od skanera sieci (`scanner.py`)
 * `scanner.py` - skrypt skanujący sieć (TODO: albo piszemy sami taki skaner albo korzystamy z gotowca typu `nmap`,`rustscanner`,`netdiscover`)
-* `smtp_handler.py` - skrypt obsługujący wysyłanie raportów poprzez email
-* `Dockerfile` - skrypt służący do budowania obrazu kontenera
+* `smtp_setup.sh` - skrypt stawiający serwer SMTP
+* `update.sh` - skrypt aktualizujący: poszczególne komponenenty GVM, samo GVM, system operacyjny
 
-## Uruchamianie
 
-Build:
 
-```
-docker build .
-```
 
-Run:
 
-Skopiuj `IMAGE ID` korzystając z polecenia `docker image ls`.
-
-```
-docker run -d -p 443:443 --name openvas <IMAGE_ID>
-```
