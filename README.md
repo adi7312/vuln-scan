@@ -49,10 +49,10 @@ Zmienne środowiskowe:
 * `PASSWORD` - hasło umożliwiające zalogowanie się na GVM (OPCJONALNE)
 * `EMAIL` - email na który będzie wysyłany raport (WYMAGANE)
 * `FREQUENCY` - częstotliwość skanowania, możliwe opcje (WYMAGANE):
-  * `YH` - co `Y` godzin
-  * `YD` - co `Y` dni
-  * `YW` - co `Y` tygodni
-  * `YM` - co `Y` miesięcy
+  * `1H` - co godzine
+  * `1D` - codziennie
+  * `1W` - raz w tygodniu
+  * `1M` - raz w miesiącu
 
 
 > Uwaga! O ile można ustawić hasło poprzez zmienne środowiskowe, to zalecane jest aby po pierwszym uruchomieniu, zmienić hasło, ponieważ w historii poleceń (lub w `/proc`) będzie można znaleźć hasło zapisane tekstem jawnym

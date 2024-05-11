@@ -27,11 +27,13 @@ def prepare_report(path_to_report):
     with open(path_to_report, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
+
     
     encoders.encode_base64(part)
     part.add_header(
         "Content-Disposition",
         f"attachment; filename= {path_to_report[13:]}",
     )
+    attachment.close()
     return part
     

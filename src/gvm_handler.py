@@ -103,7 +103,9 @@ def get_ips():
     result = subprocess.check_output(['awk' ,'/Up$/{print $2}'], input=nmap.stdout)
     return [str(x)[2:-1] for x in result.splitlines()]
 
-# TODO: Function for retrieving reports
+# TODO: Function(s) for retrieving PDF reports
+
+# TODO: Function for sending report when it is ready
 
 
 if __name__ == '__main__':
