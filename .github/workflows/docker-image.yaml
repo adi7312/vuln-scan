@@ -12,10 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build and push the Docker image
-      run: |
-      docker login --username adi7312 --password ${{ secrets.GH_PAT }} ghcr.io
-      docker build . --tag ghcr.io/adi7312/vuln-scan:latest
-      docker push ghcr.io/adi7312/vuln-scan:latest
+      run: docker login --username adi7312 --password ${{ secrets.GH_PAT }} ghcr.io; docker build . --tag ghcr.io/adi7312/vuln-scan:latest; docker push ghcr.io/adi7312/vuln-scan:latest
       
       
       
