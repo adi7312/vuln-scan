@@ -30,15 +30,7 @@
 
 Download:
 ```
-git clone https://github.com/adi7312/vuln-scan.git
-cd vuln-scan
-```
-
-Run:
-
-```
-docker build .
-docker image ls
+docker pull ghcr.io/adi7312/vuln-scan:latest
 ```
 
 Skopiuj `IMAGE_ID` najnowszego builda.
@@ -61,7 +53,7 @@ Zmienne środowiskowe:
 
 Normalne uruchomienie (może zająć aż 30/40 minut):
 ```
-docker run --detach --publish 8090:9392 -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas <IMAGE_ID>
+docker run --detach --publish 8090:9392 -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas ghcr.io/adi7312/vuln-scan:latest
 ```
 
 Uruchomienie bez synchronizacji baz zagrożeń (szybsze uruchomienie):
