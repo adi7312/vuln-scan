@@ -30,11 +30,11 @@ def main():
         scanner = get_scanner(gmp)
         scan_config = get_scan_config(gmp)
         port_list = get_port_list(gmp)
-        target = create_target(gmp, "192.168.1.190", port_list)
+        target = create_target(gmp, "192.168.1.168", port_list)
         task = create_task(gmp, scan_config, target, scanner)
         start_task(gmp, task)
         while True:
-            task_status=get_task_status(task)
+            task_status=get_task_status(gmp, task)
             if task_status == "Done":
                 report_id = get_report_id(gmp, task)
                 path_to_report = prepare_report(gmp, report_id)
@@ -149,8 +149,9 @@ def prepare_report(gmp: Gmp, report_id: str) -> str:
 def get_task_status(gmp: Gmp, task_id:str) -> str:
     task_tree = xml(gmp.get_task(task_id))
     task_status = ""
-    for task in task_tree:
-        task_status=task.find('status').text
+    for task in task_tree.findall("task"):
+        if task is not None:
+            task_status=task.find('status').text
     print(f"Task status: {task_status}")
     return task_status
 
