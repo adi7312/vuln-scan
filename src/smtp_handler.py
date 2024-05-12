@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 
 receiver_email = os.environ.get("EMAIL")
 
-def send_email(password, text,path_to_report,receiver_email=receiver_email,sender_email="avscontainer@gmail.com"):
+def send_email(password,path_to_report,receiver_email=receiver_email,sender_email="avscontainer@gmail.com"):
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)

@@ -1,7 +1,6 @@
 FROM immauss/openvas
 
-RUN cd /opt
-RUN mkdir reports
+RUN cd /opt; mkdir reports
 RUN mkdir app; cd ./app; mkdir config
 RUN apt-get update -y; apt-get install cron -y;
 RUN python3 -m pip install python-gvm --break-system-packages

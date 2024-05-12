@@ -8,14 +8,19 @@ Script responsible for handling connection with GVM using GMP protocol, addition
 from gvm.connections import TLSConnection
 from gvm.protocols.latest import Gmp, CredentialType
 from scapy.all import get_if_addr, conf, Ether, ARP, srp
+from base64 import b64decode
+from pathlib import Path
 import subprocess
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 import os
 import smtp_handler
+import time
 
 login = os.environ.get("USERNAME")
 password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
+sender_password = os.environ.get("SENDER_PASS")
+
 
 def main():
     connection = TLSConnection(hostname="localhost",port=9390)
@@ -25,9 +30,17 @@ def main():
         scanner = get_scanner(gmp)
         scan_config = get_scan_config(gmp)
         port_list = get_port_list(gmp)
-        target = create_target(gmp, ip, port_list)
+        target = create_target(gmp, "192.168.1.190", port_list)
         task = create_task(gmp, scan_config, target, scanner)
         start_task(gmp, task)
+        while True:
+            task_status=get_task_status(task)
+            if task_status == "Done":
+                report_id = get_report_id(gmp, task)
+                path_to_report = prepare_report(gmp, report_id)
+                smtp_handler.send_email(sender_password, path_to_report)
+                exit(0)
+            time.sleep(10)
 
 
 def authenticate(gmp):
@@ -88,7 +101,7 @@ def create_task(gmp: Gmp, scan_config, target, scanner):
 def get_port_list(gmp):
     tree = xml(gmp.get_port_lists())
     for lst in tree.findall('port_list'):
-        if lst.find('name').text == 'All IANA assigned TCP and UDP':
+        if lst.find('name').text == 'All IANA assigned TCP':
             return lst.get('id')
     print('Port list not found')
     exit(1)
@@ -104,8 +117,44 @@ def get_ips():
     return [str(x)[2:-1] for x in result.splitlines()]
 
 # TODO: Function(s) for retrieving PDF reports
+def get_report_id(gmp: Gmp, task_id:str) -> str:
+    task_tree = xml((gmp.get_task(task_id)))
+    report_id=""
+    for task in task_tree.findall("task"):
+        current_report = task.find("current_report")
+        if (current_report is not None):
+            report = current_report.find("report")
+            if (report is not None):
+                report_id = report.attrib["id"]
+    print(f"Report ID: {report_id}")
+    return report_id
+
+
 
 # TODO: Function for sending report when it is ready
+def prepare_report(gmp: Gmp, report_id: str) -> str:
+    report = gmp.get_report(report_id, report_format_id='c402cc3e-b531-11e1-9163-406186ea4fc5') # PDF format
+    report_tree = xml(report)
+    element = report_tree.find("report")
+    content=element.find("report_format").tail
+    binary_base64_encoded_pdf = content.encode('ascii')
+    binary_pdf = b64decode(binary_base64_encoded_pdf)
+    timestamp = int(time.time())
+    path = f"/opt/reports/report_{timestamp}.pdf"
+    pdf_path = Path(path).expanduser()
+    pdf_path.write_bytes(binary_pdf)
+    return path
+
+
+def get_task_status(gmp: Gmp, task_id:str) -> str:
+    task_tree = xml(gmp.get_task(task_id))
+    task_status = ""
+    for task in task_tree:
+        task_status=task.find('status').text
+    print(f"Task status: {task_status}")
+    return task_status
+
+
 
 
 if __name__ == '__main__':
