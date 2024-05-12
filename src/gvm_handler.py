@@ -20,6 +20,7 @@ login = os.environ.get("USERNAME")
 password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
 sender_password = os.environ.get("SENDER_PASS")
+email = os.environ.get("EMAIL")
 
 
 def main():
@@ -30,15 +31,15 @@ def main():
         scanner = get_scanner(gmp)
         scan_config = get_scan_config(gmp)
         port_list = get_port_list(gmp)
-        target = create_target(gmp, "192.168.1.168", port_list)
+        target = create_target(gmp, "192.168.1.169", port_list) # random IP for test
         task = create_task(gmp, scan_config, target, scanner)
-        start_task(gmp, task)
+        report_id = start_task(gmp, task)
+        print("Report_id",report_id)
         while True:
             task_status=get_task_status(gmp, task)
             if task_status == "Done":
-                report_id = get_report_id(gmp, task)
                 path_to_report = prepare_report(gmp, report_id)
-                smtp_handler.send_email(sender_password, path_to_report)
+                smtp_handler.send_email(sender_password, path_to_report,email)
                 exit(0)
             time.sleep(10)
 
@@ -115,20 +116,6 @@ def get_ips():
     nmap = subprocess.run(['nmap',  '-n', '-sn', ip_to_scan, '-oG', '-'], stdout=subprocess.PIPE)
     result = subprocess.check_output(['awk' ,'/Up$/{print $2}'], input=nmap.stdout)
     return [str(x)[2:-1] for x in result.splitlines()]
-
-# TODO: Function(s) for retrieving PDF reports
-def get_report_id(gmp: Gmp, task_id:str) -> str:
-    task_tree = xml((gmp.get_task(task_id)))
-    report_id=""
-    for task in task_tree.findall("task"):
-        current_report = task.find("current_report")
-        if (current_report is not None):
-            report = current_report.find("report")
-            if (report is not None):
-                report_id = report.attrib["id"]
-    print(f"Report ID: {report_id}")
-    return report_id
-
 
 
 # TODO: Function for sending report when it is ready
