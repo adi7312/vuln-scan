@@ -7,7 +7,6 @@ Script responsible for handling connection with GVM using GMP protocol, addition
 
 from gvm.connections import TLSConnection
 from gvm.protocols.latest import Gmp, CredentialType
-from scapy.all import get_if_addr, conf, Ether, ARP, srp
 from base64 import b64decode
 from pathlib import Path
 from logger import Logger
@@ -24,6 +23,7 @@ password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
 sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
+frequency = os.environ.get("FREQUENCY")
 port = 9390
 hostname="localhost"
 log_obj = Logger("/var/log/app/app.log", True)
@@ -161,6 +161,8 @@ def get_task_status(gmp: Gmp, task_id:str) -> str:
     log_obj.log("Task status:{task_status}",lvl.DEBUG)
     return task_status
 
+def create_schedule(gmp: Gmp):
+    
 
 
 

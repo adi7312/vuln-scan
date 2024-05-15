@@ -30,7 +30,6 @@ class Logger:
     def write_to_file(self, message):
         with open(self.log_file_path, "a") as f:
             f.write(message)
-            f.close()
 
 
 
