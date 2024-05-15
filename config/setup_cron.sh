@@ -1,4 +1,6 @@
 #!/bin/bash
+
+service cron start
 frequency=$FREQUENCY
 echo $FREQUENCY
 unit="${frequency: -1}"
@@ -18,4 +20,3 @@ fi
 
 crontab /tmp/mycron
 rm /tmp/mycron
-service cron start
