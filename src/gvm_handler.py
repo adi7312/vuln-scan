@@ -7,7 +7,6 @@ Script responsible for handling connection with GVM using GMP protocol, addition
 
 from gvm.connections import TLSConnection
 from gvm.protocols.latest import Gmp, CredentialType
-from scapy.all import get_if_addr, conf, Ether, ARP, srp
 from base64 import b64decode
 from pathlib import Path
 from logger import Logger
@@ -24,14 +23,14 @@ password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
 sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
+frequency = os.environ.get("FREQUENCY")
 port = 9390
 hostname="localhost"
-log_obj = Logger("/var/log/app/app.log", True)
+log_obj = Logger("/opt/log/app.log", True)
 
 
 def main():
-    
-    connection = TLSConnection(hostname=hostname,port=port)
+    connection = try_to_connect()
     log_obj.log(f"Connecting to GVM at: {hostname}:{port}",lvl.INFO)
     with Gmp(connection=connection) as gmp:
         if (authenticate(gmp) != True):
@@ -40,22 +39,24 @@ def main():
         scan_config = get_scan_config(gmp)
         port_list = get_port_list(gmp)
         ips = get_ips()
+        log_obj.log(ips,lvl.DEBUG)
         report_ids = {}
         task_ids = {}
-        for ip in ips:
-            target = create_target(gmp, ip, port_list)
-            task = create_task(gmp, scan_config, target, scanner)
-            report_id = start_task(gmp, task)
-            task_ids[ip] = task
-            report_ids[ip] = report_id
-
+        target = create_target(gmp, ips, port_list)
+        task = create_task(gmp, scan_config, target, scanner)
+        report_id = start_task(gmp, task)
         while True:
-            for ip in task_ids.keys():
-                task_status=get_task_status(gmp, task_ids[ip])
-                if task_status == "Done":
-                    path_to_report = prepare_report(gmp, report_ids[ip])
-                    smtp_handler.send_email(sender_password, path_to_report,email)
+            task_status=get_task_status(gmp, task)
+            if task_status == "Done":
+                path_to_report = prepare_report(gmp, report_id)
+                smtp_handler.send_email(sender_password, path_to_report,email)
             time.sleep(10)
+
+def try_to_connect():
+    connection = TLSConnection(hostname=hostname,port=port)
+    log_obj.log("Established",lvl.DEBUG)
+    return connection
+
 
 
 def authenticate(gmp):
@@ -77,13 +78,13 @@ def start_task(gmp: Gmp, task):
     sys.exit(1)
 
 
-def create_target(gmp: Gmp, ip, port_list):
-    response = xml(gmp.create_target('target', hosts=[ip], port_list_id=port_list))
+def create_target(gmp: Gmp, ips, port_list):
+    response = xml(gmp.create_target('target', hosts=ips, port_list_id=port_list))
     if response.get('status') == '201':
         log_obj.log("Target created",lvl.INFO)
         return response.get('id')
     log_obj.log(f"Failed to create target. Response status: {response.get('status')}",lvl.ERROR)
-    sys.exit(1)
+
 
 def get_scanner(gmp: Gmp):
     for scanner in xml(gmp.get_scanners()).findall('scanner'):
@@ -134,7 +135,6 @@ def get_ips():
     return [str(x)[2:-1] for x in result.splitlines()]
 
 
-# TODO: Function for sending report when it is ready
 def prepare_report(gmp: Gmp, report_id: str) -> str:
     report = gmp.get_report(report_id, report_format_id='c402cc3e-b531-11e1-9163-406186ea4fc5') # PDF format
     report_tree = xml(report)
@@ -158,11 +158,10 @@ def get_task_status(gmp: Gmp, task_id:str) -> str:
     if (task_status == ""):
         log_obj.log("Failed to determine task status.",lvl.ERROR)
         return 1
-    log_obj.log("Task status:{task_status}",lvl.DEBUG)
+    log_obj.log(f"Task status:{task_status}",lvl.DEBUG)
     return task_status
 
 
-
-
 if __name__ == '__main__':
+    time.sleep(60*8)
     main()
