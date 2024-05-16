@@ -6,7 +6,7 @@ Script responsible for handling connection with GVM using GMP protocol, addition
 """
 
 from gvm.connections import TLSConnection
-from gvm.protocols.latest import Gmp, CredentialType
+from gvm.protocols.latest import Gmp
 from base64 import b64decode
 from pathlib import Path
 from logger import Logger
@@ -23,7 +23,6 @@ password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
 sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
-frequency = os.environ.get("FREQUENCY")
 port = 9390
 hostname="localhost"
 log_obj = Logger("/opt/log/app.log", True)
@@ -40,8 +39,6 @@ def main():
         port_list = get_port_list(gmp)
         ips = get_ips()
         log_obj.log(ips,lvl.DEBUG)
-        report_ids = {}
-        task_ids = {}
         target = create_target(gmp, ips, port_list)
         task = create_task(gmp, scan_config, target, scanner)
         report_id = start_task(gmp, task)
@@ -49,15 +46,16 @@ def main():
             task_status=get_task_status(gmp, task)
             if task_status == "Done":
                 path_to_report = prepare_report(gmp, report_id)
+                log_obj.log("Report prepared",lvl.INFO)
                 smtp_handler.send_email(sender_password, path_to_report,email)
+                log_obj.log("Report sent.",lvl.SUCCESS)
+                break
             time.sleep(10)
 
 def try_to_connect():
     connection = TLSConnection(hostname=hostname,port=port)
     log_obj.log("Established",lvl.DEBUG)
     return connection
-
-
 
 def authenticate(gmp):
     response = xml(gmp.authenticate(login, password))
