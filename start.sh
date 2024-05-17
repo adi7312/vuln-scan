@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Check if Docker is installed
+
 if ! command -v docker &> /dev/null; then
     echo "[!] Docker is not installed."
     echo "[!] Warning: Script supports installing Docker on Ubuntu and Debian systems only!"
@@ -15,7 +15,6 @@ fi
 
 sudo service docker start
 
-# Check if FREQUENCY, EMAIL, IP, SENDER_PASS, USERNAME, PASSWORD are set
 if [ -z "$FREQUENCY" ]; then
     echo "[!] FREQUENCY is not set."
     echo "[!] Please set the FREQUENCY environment variable."
@@ -50,8 +49,9 @@ if [ -z "$PASSWORD" ]; then
     PASSWORD="admin"
 fi
 
-
+echo "[*] Pulling ghcr.io/adi7312/vuln-scan:latest..."
 docker pull ghcr.io/adi7312/vuln-scan:latest
+echo "[*] Running the container in detached mode..."
 docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e SENDER_PASS="$SENDER_PASS" -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
 docker exec avs /bin/bash /opt/app/config/setup_cron.sh
 docker exec -it avs /bin/bash /opt/app/gvm_handler.py
