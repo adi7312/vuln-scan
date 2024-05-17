@@ -47,4 +47,4 @@ docker pull ghcr.io/adi7312/vuln-scan:latest
 Write-Host "[*] Running the container in detached mode..."
 docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$env:IP -e FREQUENCY=$env:FREQUENCY -e SENDER_PASS="$env:SENDER_PASS" -e EMAIL=$env:EMAIL -e USERNAME=$env:USERNAME -e PASSWORD=$env:PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
 docker exec avs /bin/bash /opt/app/config/setup_cron.sh
-docker exec -it avs /bin/bash /opt/app/gvm_handler.py
+docker exec -it avs python3 /opt/app/gvm_handler.py

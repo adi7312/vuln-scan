@@ -49,6 +49,8 @@ def main():
                 log_obj.log("Report prepared",lvl.INFO)
                 smtp_handler.send_email(sender_password, path_to_report,email)
                 log_obj.log("Report sent.",lvl.SUCCESS)
+                delete_task(gmp, task)
+                delete_target(gmp, target)
                 break
             time.sleep(10)
 
@@ -64,6 +66,20 @@ def authenticate(gmp):
         return False
     log_obj.log("Authenticated to GVM",lvl.INFO)
     return True
+
+def delete_target(gmp: Gmp, target_id):
+    response = xml(gmp.delete_target(target_id))
+    if response.get('status') == '400':
+        log_obj.log("Failed to delete target",lvl.ERROR)
+        return False
+    log_obj.log("Target deleted",lvl.INFO)
+
+def delete_task(gmp: Gmp, task_id):
+    response = xml(gmp.delete_task(task_id))
+    if response.get('status') == '400':
+        log_obj.log("Failed to delete task",lvl.ERROR)
+        return False
+    log_obj.log("Task deleted",lvl.INFO)
 
 
 def start_task(gmp: Gmp, task):
