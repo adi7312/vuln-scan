@@ -25,7 +25,7 @@ sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
 port = 9390
 hostname="localhost"
-log_obj = Logger("/opt/log/app.log", True)
+log_obj = Logger("/opt/log/app.log", False)
 
 
 def main():
