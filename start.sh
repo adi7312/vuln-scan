@@ -5,9 +5,9 @@ if ! command -v docker &> /dev/null; then
     echo "[!] Docker is not installed."
     echo "[!] Warning: Script supports installing Docker on Ubuntu and Debian systems only!"
     echo "[*] Updating package lists..."
-    sudo apt-get update
+    sudo apt-get update -y
     echo "[*] Installing Docker..."
-    sudo apt install docker.io
+    sudo apt install docker.io -y
     echo "[+] Docker has been installed and started successfully."
 else
     echo "[*] Docker is installed."
@@ -50,10 +50,10 @@ if [ -z "$PASSWORD" ]; then
 fi
 
 echo "[*] Pulling ghcr.io/adi7312/vuln-scan:latest..."
-docker pull ghcr.io/adi7312/vuln-scan:latest
+sudo docker pull ghcr.io/adi7312/vuln-scan:latest
 echo "[*] Running the container in detached mode..."
-docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e SENDER_PASS="$SENDER_PASS" -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
-docker exec avs /bin/bash /opt/app/config/setup_cron.sh
-docker exec -it avs /bin/bash /opt/app/gvm_handler.py
+sudo docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e SENDER_PASS="$SENDER_PASS" -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
+sudo docker exec avs /bin/bash /opt/app/config/setup_cron.sh
+sudo docker exec -it avs python3 /opt/app/gvm_handler.py
 
 

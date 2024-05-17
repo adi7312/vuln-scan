@@ -1,5 +1,5 @@
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timedelta
 class Logger:
     def __init__(self,log_file_path, debug_on):
         self.log_file_path = log_file_path
@@ -7,6 +7,7 @@ class Logger:
 
     def log(self, message, level):
         now = datetime.now()
+        now = now + timedelta(hours=2)
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         if (level == Logger_levels.DEBUG):
             if (self.debug_on == True):
