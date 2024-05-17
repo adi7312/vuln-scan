@@ -46,13 +46,24 @@ Zmienne środowiskowe:
 
 > Uwaga! O ile można ustawić hasło poprzez zmienne środowiskowe, to zalecane jest aby po pierwszym uruchomieniu, zmienić hasło, ponieważ w historii poleceń (lub w `/proc`) będzie można znaleźć hasło zapisane tekstem jawnym
 
+Narzędzie przeznaczone jest przede wszystkim na platformy z systemem Linux. Narzędzie można uruchomić na systemie Windows, jednak jest to podejście niewspierane, z powodu problemów z skanowaniem sieci lokalnej.
+
 ## Uruchomienie przy pomocy skryptu
+
+### Linux
 
 ```
 git clone https://github.com/adi7312/vuln-scan.git
 cd ./vuln-scan
 chmod +x start.sh
 ./start.sh
+```
+
+### Windows
+```
+git clone https://github.com/adi7312/vuln-scan.git
+cd .\vuln-scan
+.\start.ps1
 ```
 
 ## Uruchamianie kontenera ręcznie
