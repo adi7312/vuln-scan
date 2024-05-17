@@ -2,13 +2,10 @@
 
 service cron start
 frequency=$FREQUENCY
-echo $FREQUENCY
 unit="${frequency: -1}"
-echo $unit
 crontab -l > /tmp/mycron
-if [[ "$unit" == "H" ]]; then
-    echo "30 * * * * root python3 /opt/app/gvm_handler.py" >> /tmp/mycron
-elif [[ "$unit" == "D" ]]; then
+
+if [[ "$unit" == "D" ]]; then
     echo "30 0 * * * root python3 /opt/app/gvm_handler.py" >> /tmp/mycron
 elif [[ "$unit" == "W" ]]; then
     echo "30 0 * * 0 root python3 /opt/app/gvm_handler.py" >> /tmp/mycron
