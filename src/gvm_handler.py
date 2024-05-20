@@ -32,28 +32,35 @@ log_obj = Logger("/opt/log/app.log", False)
 def main():
     connection = try_to_connect()
     log_obj.log(f"Connecting to GVM at: {hostname}:{port}",lvl.INFO)
-    with Gmp(connection=connection) as gmp:
-        if (authenticate(gmp) != True):
-            sys.exit(1)
-        scanner = get_scanner(gmp)
-        scan_config = get_scan_config(gmp)
-        port_list = get_port_list(gmp)
-        ips = get_ips()
-        log_obj.log(ips,lvl.DEBUG)
-        target = create_target(gmp, ips, port_list)
-        task = create_task(gmp, scan_config, target, scanner)
-        report_id = start_task(gmp, task)
-        while True:
-            task_status=get_task_status(gmp, task)
-            if task_status == "Done":
-                path_to_report = prepare_report(gmp, report_id)
-                log_obj.log("Report prepared",lvl.INFO)
-                smtp_handler.send_email(sender_password, path_to_report,email)
-                log_obj.log("Report sent.",lvl.SUCCESS)
-                delete_task(gmp, task)
-                delete_target(gmp, target)
-                break
-            time.sleep(10)
+    while True:
+        try:
+            gmp = Gmp(connection=connection)
+            break
+        except ConnectionRefusedError:
+            log_obj.log("Connection refused. Retrying after 30s...",lvl.WARN)
+            time.sleep(30)
+            continue
+    if (authenticate(gmp) != True):
+        sys.exit(1)
+    scanner = get_scanner(gmp)
+    scan_config = get_scan_config(gmp)
+    port_list = get_port_list(gmp)
+    ips = get_ips()
+    log_obj.log(ips,lvl.DEBUG)
+    target = create_target(gmp, ips, port_list)
+    task = create_task(gmp, scan_config, target, scanner)
+    report_id = start_task(gmp, task)
+    while True:
+        task_status=get_task_status(gmp, task)
+        if task_status == "Done":
+            path_to_report = prepare_report(gmp, report_id)
+            log_obj.log("Report prepared",lvl.INFO)
+            smtp_handler.send_email(sender_password, path_to_report,email)
+            log_obj.log("Report sent.",lvl.SUCCESS)
+            delete_task(gmp, task)
+            delete_target(gmp, target)
+            break
+        time.sleep(10)
 
 def try_to_connect():
     while True:

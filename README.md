@@ -83,3 +83,9 @@ Uruchomienie bez synchronizacji baz zagrożeń (szybsze uruchomienie):
 ```
 docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> -e SENDER_PASS=<SENDER_PASS> --name openvas ghcr.io/adi7312/vuln-scan:latest
 ```
+
+## Audyt kontenera
+
+Istnieje możliwość przeprowadzenia audytu obrazu pullowanego kontenera przy wywołaniu skryptu `start.sh` poprzez podanie argumentu `--audit-enable`, wówczas `start.sh` wywołuje jeszcze jeden skrypt: `audit.sh`. Audyt można również przeprowadzić w dowolnym czasie poprzez polecenie: `bash audit/audit.sh`.
+
+
