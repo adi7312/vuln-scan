@@ -7,6 +7,7 @@ Script responsible for handling connection with GVM using GMP protocol, addition
 
 from gvm.connections import TLSConnection
 from gvm.protocols.latest import Gmp
+from gvm.errors import GvmError
 from base64 import b64decode
 from pathlib import Path
 from logger import Logger
@@ -25,7 +26,7 @@ sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
 port = 9390
 hostname="localhost"
-log_obj = Logger("/opt/log/app.log", True)
+log_obj = Logger("/opt/log/app.log", False)
 
 
 def main():
@@ -55,9 +56,15 @@ def main():
             time.sleep(10)
 
 def try_to_connect():
-    connection = TLSConnection(hostname=hostname,port=port)
-    log_obj.log("Established",lvl.DEBUG)
-    return connection
+    while True:
+        try:
+            connection = TLSConnection(hostname=hostname,port=port)
+            log_obj.log("Connection established...",lvl.INFO)
+            return connection
+        except GvmError | ConnectionRefusedError:
+            log_obj.log("Connection failed. Retrying after 30s...",lvl.WARN)
+            time.sleep(30)
+
 
 def authenticate(gmp):
     response = xml(gmp.authenticate(login, password))
@@ -177,5 +184,4 @@ def get_task_status(gmp: Gmp, task_id:str) -> str:
 
 
 if __name__ == '__main__':
-    time.sleep(60*8)
     main()
