@@ -14,6 +14,6 @@ elif [[ "$unit" == "M" ]]; then
 else
     echo "30 0 * * * root python3 /opt/app/gvm_handler.py" >> /tmp/mycron
 fi
-
+echo echo "30 0 * * * root bash /opt/app/config/update.sh" >> /tmp/mycron
 crontab /tmp/mycron
 rm /tmp/mycron
