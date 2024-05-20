@@ -51,6 +51,11 @@ fi
 
 echo "[*] Pulling ghcr.io/adi7312/vuln-scan:latest..."
 sudo docker pull ghcr.io/adi7312/vuln-scan:latest
+# if --audit flag is passed perform below operation
+if [ "$1" = "--audit-enable" ]; then
+    echo "[*] Running the audit script..."
+    sudo bash audit/audit.sh
+fi
 echo "[*] Running the container in detached mode..."
 sudo docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e SENDER_PASS="$SENDER_PASS" -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
 sudo docker exec avs /bin/bash /opt/app/config/setup_cron.sh

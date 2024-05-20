@@ -1,3 +1,12 @@
+if ! docker scout version &> /dev/null; then
+    echo "[!] Docker Scout is not installed."
+    echo "[*] Installing Docker Scout..."
+    curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+    sudo sh install-scout.sh
+    echo "[+] Docker Scout has been installed successfully."
+else
+    echo "[*] Docker Scout is installed."
+fi
 echo "[*] Performing an audit of the image ghcr.io/adi7312/vuln-scan:latest..."
 sudo docker scout cves --format only-packages --output vuln_scan_image_audit.txt --exit-code ghcr.io/adi7312/vuln-scan:latest 
 if [ $? -ne 0 ]; then
