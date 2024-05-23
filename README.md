@@ -2,6 +2,8 @@
 
 ## Opis projektu
 
+Narzędzie do automatyzacji skanowania i oceniania podatności w sieci lokalnej z wykorzystanem skanera podatności OpenVAS.
+
 ```
 /
 |---src
@@ -20,6 +22,10 @@
 |    |---setup_cron.sh
 |
 |
+|---audit
+|    |
+|    |---audit.sh
+|
 |---start.sh
 |
 |---Dockerfile
@@ -31,6 +37,7 @@
 * `update.sh` - skrypt aktualizujący: poszczególne komponenenty GVM, system operacyjny, itd.
 * `setup_cron.sh` - skrypt uruchamiający harmonogram skanów
 * `start.sh` - skrypt uruchamiający kontener z domyślnymi parametrami
+* `audit.sh` - skrypt odpowiedzialny za przeprowadzenie audytu bezpieczeństwa obrazu kontenera
 * `Dockerfile` - skrypt dockera odpowiedzialny za zbudowanie obrazu kontenera
 
 Zmienne środowiskowe:
