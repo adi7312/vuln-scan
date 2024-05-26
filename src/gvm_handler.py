@@ -65,9 +65,13 @@ def main():
             delete_task(gmp, task)
             delete_target(gmp, target)
             break
+        elif task_status == "Interrupted" or task_status == "Stopped":
+            log_obj.log("Task interrupted. Retrying...",lvl.ERROR)
+            delete_task(gmp, task)
+            start_task(gmp, task)
         time.sleep(10)
 
-def try_to_connect():
+def try_to_connect(): 
     while True:
         try:
             connection = TLSConnection(hostname=hostname,port=port)
