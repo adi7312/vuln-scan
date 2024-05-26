@@ -68,6 +68,7 @@ def main():
         elif task_status == "Interrupted" or task_status == "Stopped":
             log_obj.log("Task interrupted. Retrying...",lvl.ERROR)
             delete_task(gmp, task)
+            task = create_task(gmp, scan_config, target, scanner)
             start_task(gmp, task)
         time.sleep(10)
 
