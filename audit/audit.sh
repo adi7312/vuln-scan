@@ -1,3 +1,4 @@
+echo "[!] WARNING: For this operation you need to be authentictaed into DockerHub!"
 if ! docker scout version &> /dev/null; then
     echo "[!] Docker Scout is not installed."
     echo "[*] Installing Docker Scout..."
@@ -21,3 +22,5 @@ if [ $? -ne 2 ]; then
     exit 0
 fi
 echo "[!] Probability of found vulnerabilities being exploited is above 20%. Anaylsis completed. Results saved to vuln_scan_prob_analysis.txt."
+echo "[*] Generating SBOM for the image ghcr.io/adi7312/vuln-scan:latest..."
+sudo docker sbom ghcr.io/adi7312/vuln-scan:latest --output vuln_scan_image_sbom.txt
