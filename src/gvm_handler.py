@@ -24,9 +24,12 @@ password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
 sender_password = os.environ.get("SENDER_PASS")
 email = os.environ.get("EMAIL")
+debug_mode = os.environ.get("DEBUG")
+if debug_mode == "":
+    debug_mode = False
 port = 9390
 hostname="localhost"
-log_obj = Logger("/opt/log/app.log", False)
+log_obj = Logger("/opt/log/app.log", debug_mode)
 
 
 def main():
