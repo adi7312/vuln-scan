@@ -4,7 +4,7 @@ service cron start
 frequency=$FREQUENCY
 unit="${frequency: -1}"
 crontab -l > /tmp/mycron
-
+env >> /etc/environment
 if [[ "$unit" == "D" ]]; then
     echo "30 0 * * *  /usr/bin/python3 /opt/app/gvm_handler.py" >> /tmp/mycron
 elif [[ "$unit" == "W" ]]; then
