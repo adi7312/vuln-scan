@@ -41,7 +41,7 @@ def main():
             authenticate(gmp)
             break
         except ConnectionRefusedError:
-            log_obj.log("Connection refused. Retrying after 30s...",lvl.WARN)
+            log_obj.log("Connection refused. Retrying after 30s...",lvl.DEBUG)
             time.sleep(30)
             continue
     scanner = get_scanner(gmp)
