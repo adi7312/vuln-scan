@@ -33,31 +33,27 @@ if [ -z "$IP" ]; then
     exit 1
 fi
 
-if [ -z "$SENDER_PASS" ]; then
-    echo -e "\e[0;31m[!]\e[m SENDER_PASS is not set."
-    echo -e "\e[0;31m[!]\e[m Please set the SENDER_PASS environment variable."
+
+if [ -z "$USERNAME" ]; then
+    echo -e "\e[0;31m[!]\e[m USERNAME is not set."
+    echo -e "\e[0;31m[!]\e[m Please set the USERNAME environment variable."
     exit 1
 fi
 
-if [ -z "$USERNAME" ]; then
-    echo -e "\e[0;31m[!]\e[m USERNAME is not set. Switching to default username: admin."
-    USERNAME="admin"
-fi
-
 if [ -z "$PASSWORD" ]; then
-    echo -e "\e[0;31m[!]\e[m PASSWORD is not set. Switching to default password: admin."
-    PASSWORD="admin"
+    echo -e "\e[0;31m[!]\e[m PASSWORD is not set."
+    echo -e "\e[0;31m[!]\e[m Please set the PASSWORD environment variable."
+    exit 1
 fi
 
 echo -e "\e[0;36m[*]\e[m Pulling ghcr.io/adi7312/vuln-scan:latest..."
 docker pull ghcr.io/adi7312/vuln-scan:latest
-# if --audit flag is passed perform below operation
 if [ "$1" = "--audit-enable" ]; then
     echo -e "\e[0;36m[*]\e[m Running the audit script..."
     sudo bash audit/audit.sh
 fi
 echo -e "\e[0;36m[*]\e[m Running the container in detached mode..."
-docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e SENDER_PASS="$SENDER_PASS" -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
+docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=$IP -e FREQUENCY=$FREQUENCY -e EMAIL=$EMAIL -e USERNAME=$USERNAME -e PASSWORD=$PASSWORD --name avs ghcr.io/adi7312/vuln-scan:latest
 docker exec avs /bin/bash /opt/app/config/setup_cron.sh
 docker exec -it avs python3 /opt/app/gvm_handler.py
 
