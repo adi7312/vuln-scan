@@ -22,7 +22,7 @@ import time
 login = os.environ.get("USERNAME")
 password = os.environ.get("PASSWORD")
 ip_to_scan = os.environ.get("IP")
-sender_password = os.environ.get("SENDER_PASS")
+sender_password = os.environ.get("S_PASS")
 email = os.environ.get("EMAIL")
 debug_mode = os.environ.get("DEBUG")
 if debug_mode == "T":
