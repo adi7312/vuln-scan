@@ -37,7 +37,7 @@ log_obj = Logger("/opt/log/app.log", debug_mode)
 
 def main():
     connection = try_to_connect()
-    log_obj.log(f"Connecting to GVM at: {hostname}:{port}",lvl.INFO)
+    log_obj.log(f"Connecting to GVM at: {hostname}:{port}...",lvl.INFO)
     while True:
         try:
             gmp = Gmp(connection=connection)
@@ -69,7 +69,7 @@ def main():
             log_obj.log("Task interrupted. Retrying...",lvl.ERROR)
             delete_task(gmp, task)
             task = create_task(gmp, scan_config, target, scanner)
-            start_task(gmp, task)
+            report_id = start_task(gmp, task)
         time.sleep(10)
 
 def try_to_connect(): 
@@ -77,6 +77,7 @@ def try_to_connect():
         try:
             connection = TLSConnection(hostname=hostname,port=port)
             log_obj.log("Connection established...",lvl.INFO)
+            log_obj.log("Trying to authenticate...It can take a while",lvl.INFO)
             return connection
         except GvmError | ConnectionRefusedError:
             log_obj.log("Connection failed. Retrying after 30s...",lvl.WARN)

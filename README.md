@@ -49,7 +49,6 @@ Zmienne środowiskowe:
   * `1D` - codziennie
   * `1W` - raz w tygodniu
   * `1M` - raz w miesiącu
-* `SENDER_PASS` - app password do maila podmiotu wysyłającego (WYMAGANE)
 
 > Uwaga! O ile można ustawić hasło poprzez zmienne środowiskowe, to zalecane jest aby po pierwszym uruchomieniu, zmienić hasło, ponieważ w historii poleceń (lub w `/proc`) będzie można znaleźć hasło zapisane tekstem jawnym
 
@@ -66,12 +65,6 @@ chmod +x start.sh
 ./start.sh
 ```
 
-### Windows
-```
-git clone https://github.com/adi7312/vuln-scan.git
-cd .\vuln-scan
-.\start.ps1
-```
 
 ## Uruchamianie kontenera ręcznie
 
@@ -93,6 +86,10 @@ docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK>
 
 ## Audyt kontenera
 
-Istnieje możliwość przeprowadzenia audytu obrazu pullowanego kontenera przy wywołaniu skryptu `start.sh` poprzez podanie argumentu `--audit-enable`, wówczas `start.sh` wywołuje jeszcze jeden skrypt: `audit.sh`. Audyt można również przeprowadzić w dowolnym czasie poprzez polecenie: `bash audit/audit.sh`.
+Istnieje możliwość przeprowadzenia audytu bezpieczeństwa obrazu pullowanego kontenera przy wywołaniu skryptu `start.sh` poprzez podanie argumentu `--audit-enable`, wówczas `start.sh` wywołuje jeszcze jeden skrypt: `audit.sh`. Audyt można również przeprowadzić w dowolnym czasie poprzez polecenie: `bash audit/audit.sh`.
+
+Rezultatem audytu są pliki: `vuln_scan_image_audit.txt` - lista znalezionych podatności, `vuln_scan_prob_analysis.txt` - podatności których prawdpodobieństwo użycia jest większe niż 20% oraz `vuln_scan_image_sbom.txt` - Software Bill of Materials.
+
+
 
 
