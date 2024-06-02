@@ -75,13 +75,13 @@ docker pull ghcr.io/adi7312/vuln-scan:latest
 
 Normalne uruchomienie (może zająć aż 30/40 minut):
 ```
-docker run --detach --publish 8090:9392 -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> -e SENDER_PASS=<SENDER_PASS> --name openvas ghcr.io/adi7312/vuln-scan:latest
+docker run --detach --publish 8090:9392 -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas ghcr.io/adi7312/vuln-scan:latest
 ```
 
 Uruchomienie bez synchronizacji baz zagrożeń (szybsze uruchomienie):
 
 ```
-docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> -e SENDER_PASS=<SENDER_PASS> --name openvas ghcr.io/adi7312/vuln-scan:latest
+docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas ghcr.io/adi7312/vuln-scan:latest
 ```
 
 ## Audyt kontenera
