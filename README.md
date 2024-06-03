@@ -42,15 +42,12 @@ Narzędzie do automatyzacji skanowania i oceniania podatności w sieci lokalnej 
 
 Zmienne środowiskowe:
 * `IP` - IP skanowanej sieci podane wraz z maską (WYMAGANE)
-* `USERNAME` - login umożliwiający zalogowanie się na GVM (WYMAGANE)
-* `PASSWORD` - hasło umożliwiające zalogowanie się na GVM (WYMAGANE)
 * `EMAIL` - email na który będzie wysyłany raport (WYMAGANE)
 * `FREQUENCY` - częstotliwość skanowania, możliwe opcje (WYMAGANE):
   * `1D` - codziennie
   * `1W` - raz w tygodniu
   * `1M` - raz w miesiącu
 
-> Uwaga! O ile można ustawić hasło poprzez zmienne środowiskowe, to zalecane jest aby po pierwszym uruchomieniu, zmienić hasło, ponieważ w historii poleceń (lub w `/proc`) będzie można znaleźć hasło zapisane tekstem jawnym
 
 Narzędzie przeznaczone jest przede wszystkim na platformy z systemem Linux. Narzędzie można uruchomić na systemie Windows, jednak jest to podejście niewspierane, z powodu problemów z skanowaniem sieci lokalnej.
 
@@ -62,6 +59,9 @@ Narzędzie przeznaczone jest przede wszystkim na platformy z systemem Linux. Nar
 git clone https://github.com/adi7312/vuln-scan.git
 cd ./vuln-scan
 chmod +x start.sh
+export IP=<IP>/<MASK>
+export EMAIL=<EMAIL>
+export FREQUENCY=<FREQ>
 ./start.sh
 ```
 
