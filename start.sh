@@ -33,6 +33,12 @@ if [ -z "$IP" ]; then
     exit 1
 fi
 
+if [ -z "$S_PASS" ]; then
+    echo -e "\e[0;31m[!]\e[m S_PASS is not set."
+    echo -e "\e[0;31m[!]\e[m Please set the S_PASS environment variable."
+    exit 1
+fi
+
 
 echo -e "\e[0;36m[*]\e[m Pulling ghcr.io/adi7312/vuln-scan:latest..."
 docker pull ghcr.io/adi7312/vuln-scan:latest

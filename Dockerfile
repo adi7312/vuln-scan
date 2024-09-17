@@ -1,6 +1,4 @@
 FROM immauss/openvas
-ARG S_PASS
-ENV S_PASS=$S_PASS
 RUN cd /opt; mkdir reports; mkdir log; touch ./log/app.log
 RUN mkdir app; cd ./app; mkdir config;
 RUN apt-get update -y; apt-get install cron -y; apt-get upgrade -y;
