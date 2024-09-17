@@ -47,7 +47,7 @@ Zmienne środowiskowe:
   * `1D` - codziennie
   * `1W` - raz w tygodniu
   * `1M` - raz w miesiącu
-
+* `S_PASS` - app password podmiotu wysyłającego (gmail)
 
 Narzędzie przeznaczone jest przede wszystkim na platformy z systemem Linux. Narzędzie można uruchomić na systemie Windows, jednak jest to podejście niewspierane, z powodu problemów z skanowaniem sieci lokalnej.
 
@@ -62,6 +62,7 @@ chmod +x start.sh
 export IP=<IP>/<MASK>
 export EMAIL=<EMAIL>
 export FREQUENCY=<FREQ>
+export S_PASS=<S_PASS>
 ./start.sh
 ```
 
