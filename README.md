@@ -1,8 +1,9 @@
-# Automatyzacja skanowania podatności
+# Vulnerability Scanning Automation
 
-## Opis projektu
+## Project Description
 
-Narzędzie do automatyzacji skanowania i oceniania podatności w sieci lokalnej z wykorzystanem skanera podatności OpenVAS.
+A tool for automating the scanning and assessment of vulnerabilities in a local network using the OpenVAS vulnerability scanner.
+
 
 ```
 /
@@ -31,27 +32,27 @@ Narzędzie do automatyzacji skanowania i oceniania podatności w sieci lokalnej 
 |---Dockerfile
 ```
 
-* `gvm_handler.py` - skrypt obsługujący działanie GVM: uruchamanie skanowania, generowanie raportu, IP urządzeń powinny być pobierane od skanera sieci (`scanner.py`)
-* `smtp_handler.py` - skrypt obsługujący wysyłanie raportu PDF do użytkownika końcowego
-* `logger.py` - prosty skrypt prowadzący rejestr zdarzeń w trakcie działania aplikacji
-* `update.sh` - skrypt aktualizujący: poszczególne komponenenty GVM, system operacyjny, itd.
-* `setup_cron.sh` - skrypt uruchamiający harmonogram skanów
-* `start.sh` - skrypt uruchamiający kontener z domyślnymi parametrami
-* `audit.sh` - skrypt odpowiedzialny za przeprowadzenie audytu bezpieczeństwa obrazu kontenera
-* `Dockerfile` - skrypt dockera odpowiedzialny za zbudowanie obrazu kontenera
+* `gvm_handler.py` - script handling the operation of GVM: starting scans, generating reports, and retrieving IP addresses of devices from the network scanner (`scanner.py`)
+* `smtp_handler.py` - script responsible for sending the PDF report to the end user
+* `logger.py` - a simple script that logs events during the application's execution
+* `update.sh` - script for updating GVM components, the operating system, etc.
+* `setup_cron.sh` - script to set up the scan schedule
+* `start.sh` - script that starts the container with default parameters
+* `audit.sh` - script responsible for conducting a security audit of the container image
+* `Dockerfile` - docker script responsible for building the container image
 
-Zmienne środowiskowe:
-* `IP` - IP skanowanej sieci podane wraz z maską (WYMAGANE)
-* `EMAIL` - email na który będzie wysyłany raport (WYMAGANE)
-* `FREQUENCY` - częstotliwość skanowania, możliwe opcje (WYMAGANE):
-  * `1D` - codziennie
-  * `1W` - raz w tygodniu
-  * `1M` - raz w miesiącu
-* `S_PASS` - app password podmiotu wysyłającego (gmail)
+### Environment variables:
+* `IP` - the IP of the network to be scanned, provided with a mask (REQUIRED)
+* `EMAIL` - email address to which the report will be sent (REQUIRED)
+* `FREQUENCY` - scan frequency, possible options (REQUIRED):
+  * `1D` - daily
+  * `1W` - weekly
+  * `1M` - monthly
+* `S_PASS` - app password for the sender (Gmail)
 
-Narzędzie przeznaczone jest przede wszystkim na platformy z systemem Linux. Narzędzie można uruchomić na systemie Windows, jednak jest to podejście niewspierane, z powodu problemów z skanowaniem sieci lokalnej.
+The tool is primarily intended for platforms running Linux. It can also be run on Windows systems, but this is not officially supported due to issues with local network scanning.
 
-## Uruchomienie przy pomocy skryptu
+## Running with the script
 
 ### Linux
 
@@ -67,19 +68,19 @@ export S_PASS=<S_PASS>
 ```
 
 
-## Uruchamianie kontenera ręcznie
+## Running the container manually
 
-Pobranie obrazu kontenera:
+Pull the container image:
 ```
 docker pull ghcr.io/adi7312/vuln-scan:latest
 ```
 
-Normalne uruchomienie (może zająć aż 30/40 minut):
+Normal startup (may take 30-40 minutes):
 ```
 docker run --detach --publish 8090:9392 -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas ghcr.io/adi7312/vuln-scan:latest
 ```
 
-Uruchomienie bez synchronizacji baz zagrożeń (szybsze uruchomienie):
+Startup without syncing the threat databases (faster startup):
 
 ```
 docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK> -e USERNAME=<USERNAME> -e PASSWORD=<PASSWORD> -e EMAIL=<EMAIL> -e FREQUENCY=<FREQUENCY> --name openvas ghcr.io/adi7312/vuln-scan:latest
@@ -87,9 +88,11 @@ docker run --detach --publish 8090:9392 -e SKIPSYNC=true -e IP=<NETWORK_IP/MASK>
 
 ## Audyt kontenera
 
-Istnieje możliwość przeprowadzenia audytu bezpieczeństwa obrazu pullowanego kontenera przy wywołaniu skryptu `start.sh` poprzez podanie argumentu `--audit-enable`, wówczas `start.sh` wywołuje jeszcze jeden skrypt: `audit.sh`. Audyt można również przeprowadzić w dowolnym czasie poprzez polecenie: `bash audit/audit.sh`.
+## Container Audit
 
-Rezultatem audytu są pliki: `vuln_scan_image_audit.txt` - lista znalezionych podatności, `vuln_scan_prob_analysis.txt` - podatności których prawdpodobieństwo użycia jest większe niż 20% oraz `vuln_scan_image_sbom.txt` - Software Bill of Materials.
+It is possible to conduct a security audit of the pulled container image when running the `start.sh` script by providing the `--audit-enable` argument. In that case, `start.sh` will invoke another script: `audit.sh`. An audit can also be performed at any time by executing the command: `bash audit/audit.sh`.
+
+The result of the audit includes the following files: `vuln_scan_image_audit.txt` - a list of detected vulnerabilities, `vuln_scan_prob_analysis.txt` - vulnerabilities with a likelihood of exploitation greater than 20%, and `vuln_scan_image_sbom.txt` - Software Bill of Materials.
 
 
 
